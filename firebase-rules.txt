@@ -1,0 +1,166 @@
+
+================================================================================
+  ⚠ THIS IS THE ONE YOU NEED  —  Realtime Database (dnd-game-2, europe-west1)
+================================================================================
+
+Your project uses the REALTIME DATABASE, so paste this and ignore the Firestore
+sections below.
+
+  Firebase console → Build → Realtime Database → Rules → paste → Publish
+  https://console.firebase.google.com/project/dnd-game-2/database/dnd-game-2-default-rtdb/rules
+
+{
+  "rules": {
+    "meta": {
+      ".read": true,
+      ".write": true
+    },
+    "players": {
+      ".read": true,
+      "$player": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['name'])"
+      }
+    }
+  }
+}
+
+Why your current rules don't work: they permit writes but deny reads. The game
+could save but never load anything back, which is worse than being offline.
+Both must be allowed.
+
+This is "anyone who knows the URL can read and write". For a two-person game
+nobody else has the link to, that is a reasonable trade. If you'd rather lock it
+down, use the anonymous-auth version further down this file.
+
+════════════════════════════════════════════════════════════════
+ TALES OF THE DM — Firebase security rules
+════════════════════════════════════════════════════════════════
+
+Pick the section that matches the database you're using, paste it
+into the Firebase console, and press Publish.
+
+────────────────────────────────────────────────────────────────
+ 1. CLOUD FIRESTORE — open (fine for a private game)
+    Console → Firestore Database → Rules  (dnd-game-2)
+────────────────────────────────────────────────────────────────
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Player saves: anyone with the project URL can read/write.
+    // Good enough for a two-person game. See section 3 to lock down.
+    match /players/{playerId} {
+      allow read, write: if true;
+    }
+
+    // Roster of who has played, plus a heartbeat doc used to test
+    // connectivity on startup.
+    match /meta/{docId} {
+      allow read, write: if true;
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+────────────────────────────────────────────────────────────────
+ 2. REALTIME DATABASE — open (fine for a private game)
+    Console → Realtime Database → Rules
+────────────────────────────────────────────────────────────────
+
+{
+  "rules": {
+    "players": {
+      ".read": true,
+      ".write": true,
+      "$playerId": {
+        ".validate": "newData.hasChildren(['name'])"
+      }
+    },
+    "meta": {
+      ".read": true,
+      ".write": true
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
+
+────────────────────────────────────────────────────────────────
+ 3. LOCKED DOWN — recommended if the repo goes public
+────────────────────────────────────────────────────────────────
+
+These require Firebase Anonymous Authentication.
+
+STEP 1 — Turn it on:
+  Console → Authentication → Sign-in method → Anonymous → Enable
+
+STEP 2 — Add this line to index.html, just before the closing
+         </body> tag (after the other script tags):
+
+  <script>
+    if (window.firebase && firebase.apps && firebase.apps.length) {
+      firebase.auth().signInAnonymously().catch(function (e) {
+        console.warn('anonymous sign-in failed', e);
+      });
+    }
+  </script>
+
+  ...and add the auth SDK alongside the other Firebase scripts:
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+STEP 3 — Publish these rules instead.
+
+FIRESTORE:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /players/{playerId} {
+      allow read, write: if request.auth != null;
+    }
+    match /meta/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+REALTIME DATABASE:
+
+{
+  "rules": {
+    "players": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "meta": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "$other": { ".read": false, ".write": false }
+  }
+}
+
+────────────────────────────────────────────────────────────────
+ A NOTE ON THE API KEY
+────────────────────────────────────────────────────────────────
+
+The apiKey in js/firebase-config.js is a PUBLIC client identifier.
+It is meant to be visible in web pages and is safe to commit to
+GitHub. It does not grant access on its own — your security rules
+above are what actually protect the data.
+
+To stop other websites from using your key, optionally restrict it:
+  Google Cloud Console → APIs & Services → Credentials
+  → your browser key → Website restrictions → add your domain.

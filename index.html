@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tales of the DM</title>
+<meta name="description" content="A choice-driven D&amp;D story game. Build a hero, make choices you cannot take back, and watch the world remember.">
+<meta name="theme-color" content="#2a1d14">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎲</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="embers" id="embers" aria-hidden="true"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="dbchip local" id="dbchip"><span class="led"></span><span>Connecting…</span></div>
+
+<!-- ══════════════ START ══════════════ -->
+<section class="screen active" id="screen-start">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="crest">🎲</div>
+      <h1 class="game-title">Tales<span class="of">of the</span>Dungeon Master</h1>
+      <div class="rule"><span class="line"></span><span>✦</span><span class="line"></span></div>
+
+      <div class="welcome">
+        <h2 id="welcomeTitle">Welcome, Nergis</h2>
+        <p id="welcomeText">A world of old wizards, stubborn trees and very good pie is waiting for you.</p>
+        <div class="start-actions">
+          <button class="btn primary" id="btnNew">⚔️ New game</button>
+          <button class="btn" id="btnContinue" style="display:none">▸ Continue</button>
+          <button class="btn ghost" id="btnChron">📖 The chronicle</button>
+        </div>
+      </div>
+
+      <div class="who">
+        <div class="who-label">Who's playing?</div>
+        <div class="who-row" id="whoRow"></div>
+      </div>
+
+      <div class="tagline">Every choice is permanent. The world remembers what you did.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ EPISODES ══════════════ -->
+<section class="screen" id="screen-episodes">
+  <div class="wrap">
+    <div class="screen-head">
+      <div>
+        <h2>Choose your episode</h2>
+        <div class="sub">Playing as <b id="epWho">—</b> · new episodes unlock as they're written</div>
+      </div>
+      <button class="btn ghost" id="epBack">← Main menu</button>
+    </div>
+    <div class="ep-grid" id="epGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════════ CHARACTER CREATION ══════════════ -->
+<section class="screen" id="screen-create">
+  <div class="wrap">
+    <div class="screen-head">
+      <div><h2>Create your hero</h2><div class="sub">She is yours. Make her exactly right.</div></div>
+    </div>
+    <div class="cc-layout">
+      <div class="panel cc-preview">
+        <div class="cc-portrait" id="ccPortrait"></div>
+        <div class="cc-name-preview" id="ccNamePrev"></div>
+        <div class="cc-stats-mini" id="ccStatsMini"></div>
+      </div>
+      <div>
+        <div class="cc-steps" id="ccSteps"></div>
+        <div class="panel pad" id="ccBody"></div>
+        <div class="cc-nav" id="ccNav"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ GAME ══════════════ -->
+<section class="screen" id="screen-game">
+  <div class="game-wrap">
+    <div class="g-top">
+      <div class="ep" id="gEpTitle"></div>
+      <div class="g-top-actions">
+        <span class="savechip" id="savechip">✓ Saved</span>
+        <button class="tbtn" id="gChron">📖 Chronicle</button>
+        <button class="tbtn" id="gEpisodes">Episodes</button>
+        <button class="tbtn" id="gBack">Menu</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="scene-art" id="sceneArt"></div>
+      <div class="scene-body">
+        <div class="scene-text" id="sceneText"></div>
+        <div class="choices" id="choices"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card"><div class="card-h">Your hero</div><div class="card-b" id="sideHero"></div></div>
+      <div class="card"><div class="card-h">Pack</div><div class="card-b" id="sideInv"></div></div>
+      <div class="card" id="sideBonds" style="display:none"><div class="card-h">Who remembers you</div><div class="card-b" id="bondList"></div></div>
+      <div class="card"><div class="card-h">Once per episode</div><div class="card-b" id="sidePerks"></div></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ══════════════ EPISODE END ══════════════ -->
+<section class="screen" id="screen-end">
+  <div class="wrap narrow" id="endBody"></div>
+</section>
+
+<!-- ══════════════ CHRONICLE ══════════════ -->
+<section class="screen" id="screen-chronicle">
+  <div class="wrap">
+    <div class="screen-head">
+      <div><h2>📖 The Chronicle</h2><div class="sub">Every choice that mattered, remembered forever</div></div>
+      <button class="btn ghost" onclick="document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-start').classList.add('active')">← Main menu</button>
+    </div>
+    <div class="chron-tabs" id="chronTabs"></div>
+    <div id="chronBody"></div>
+  </div>
+</section>
+
+<!-- ══════════════ DICE OVERLAY ══════════════ -->
+<div class="overlay" id="diceOverlay">
+  <div class="dice-box">
+    <div class="dice-check">Skill check</div>
+    <div class="dice-name" id="diceName"></div>
+    <div class="dice-dc" id="diceDc"></div>
+    <div class="d20" id="d20">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e8c06a"/><stop offset="1" stop-color="#b9822a"/>
+          </linearGradient>
+        </defs>
+        <polygon points="50,4 93,28 93,72 50,96 7,72 7,28" fill="url(#dg)" stroke="#7d5717" stroke-width="2.5"/>
+        <polygon points="50,4 93,28 50,46 7,28" fill="#f2d68f" opacity=".55"/>
+        <polygon points="7,28 50,46 50,96 7,72" fill="#8c6320" opacity=".28"/>
+        <polygon points="93,28 50,46 50,96 93,72" fill="#6b4a12" opacity=".2"/>
+        <polygon points="50,20 74,34 65,62 35,62 26,34" fill="none" stroke="#7d5717" stroke-width="1.6" opacity=".55"/>
+      </svg>
+      <div class="d20-num" id="d20num"></div>
+    </div>
+    <div class="dice-adv" id="diceAdv"></div>
+    <div class="dice-math" id="diceMath"></div>
+    <div class="dice-result" id="diceResult"></div>
+    <div class="dice-flavor" id="diceFlavor"></div>
+    <div id="perkOffer"></div>
+    <div class="dice-actions" id="diceActions"></div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL ══════════════ -->
+<div class="overlay" id="modal"><div class="modal-box" id="modalBox"></div></div>
+
+<!-- Firebase (optional — game runs offline if these don't load) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/data/character-options.js"></script>
+<script src="js/data/items.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/data/episode1.js"></script>
+<script src="js/data/episode1-perry.js"></script>
+<script src="js/data/perry-run.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "tales-of-the-dm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A choice-driven D&D story game. Episode 1: Grammy's Country Apple Pie.",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "validate": "node tools/validate.js",
+    "simulate": "node tools/simulate.js",
+    "test": "node tools/validate.js && node tools/simulate.js && node tools/dedupe-test.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.43.1"
+  }
+}

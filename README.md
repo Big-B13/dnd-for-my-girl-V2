@@ -243,6 +243,71 @@ Push onto `TDM.CREW`, then use the `setText` / `addFx` / `addChoice` helpers at
 the top of `goblins.js`. Overriding scene *text* and merging *effects* keeps every
 `goto` in `episode1.js` intact, which is why the patch cannot break routing.
 
+## Flow — why the bakery stops repeating itself
+
+`js/data/flow.js` (loaded last) fixes the biggest structural problem in
+Episode 1: the hubs were menus. You could examine the failed baking attempts
+nine times, loot the cold-rooms twice, and re-trigger the rafter standoff
+forever. A random playthrough spent **44% of its scene entries re-reading rooms
+it had already read**.
+
+Three rules, applied by matching choice **text** (not index, so it survives
+edits to the episode files):
+
+1. **Every examine / search / take link is one-shot.** Once you have done a
+   thing, the game stops offering it. Mutually exclusive options (pick the lock
+   *or* smash it) retire as a group.
+2. **Doors close behind you.** When a room has nothing left in it, the hub stops
+   listing it — `closeWhen('shop_hub', 'The office.', ...)`. Once the floor is
+   spent, the stairs are the only way on.
+3. **Hubs narrate progress.** `bakery_floor`, `shop_hub` and `orchard_hub` have
+   text *functions* that describe what is left rather than repeating the
+   establishing shot — ending at *"You have been over the whole floor… whatever
+   is left in this building is up the stairs."*
+
+This rests on two lines added to `view()` in `js/engine.js`:
+
+```js
+taken:   (scene, text) => save.choices.some(c => c.scene === scene && (text == null || c.text === text)),
+visited: (scene)       => save.choices.some(c => c.scene === scene),
+```
+
+`save.choices` was already being recorded, so no save-format change and old
+saves keep working.
+
+### Measured effect — `npm run flow`
+
+`tools/repetition-test.js` plays 400 random runs with and without the patch:
+
+| | without | with |
+|---|---|---|
+| scene entries per run | 110.4 | 71.3 |
+| **repeated** entries per run | **46.3** | **14.9** |
+| share of playthrough that is repetition | 44% | 21% |
+| reached the ending | 399/400 | 400/400 |
+
+**Repeated scene entries are down 68%**, and completion went *up*
+(`simulate.js`: 1186/1200, 0 dead ends, 193/193 scenes reachable). Note this is
+a *random* walker, which wanders on purpose; a player with intent sees far less.
+
+### Two traps worth knowing about
+
+Making choices conditional can strand a scene, and it did — twice — before
+`simulate.js` caught it:
+
+* **Ten different scenes route into `apartment_desk`**, several with the desk as
+  their *only* choice. Hiding the link dead-ended them. Those are now
+  **re-pointed forward** to `apartment_notebook` instead of hidden — see
+  `retire()`, which only hides a link when some *other* choice in that scene is
+  unconditional.
+* **The office half of the recipe lives in the office desk.** Closing the office
+  door on thoroughness alone could lock a player out of finishing, so the door
+  reopens whenever `!S.has('recipe_half_office')`.
+
+`TDM.FLOW_RISK` lists any scene whose choices are now all conditional; set
+`TDM.DEBUG_FLOW = true` to print it. Always re-run `npm test` after editing
+`flow.js`.
+
 ## How the "no going back" rule is enforced
 
 There is no back button, no undo, and no branch re-entry once a choice is committed.

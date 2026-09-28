@@ -140,6 +140,10 @@
       has: (id) => save.items.some(it => it.id === id && it.qty > 0),
       itemQty: (id) => { const it = save.items.find(x => x.id === id); return it ? it.qty : 0; },
       bond: (n) => save.bonds[n] || 0,
+      // Has this exact choice already been taken? Lets scenes stop offering
+      // the same action twice, so hubs empty out instead of looping forever.
+      taken: (scene, text) => save.choices.some(c => c.scene === scene && (text == null || c.text === text)),
+      visited: (scene) => save.choices.some(c => c.scene === scene),
       mod: (a) => mods[a] || 0,
       skill: (id) => skills[id] || 0,
       skills, mods,

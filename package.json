@@ -7,7 +7,8 @@
     "start": "python3 -m http.server 8080",
     "validate": "node tools/validate.js",
     "simulate": "node tools/simulate.js",
-    "test": "node tools/validate.js && node tools/simulate.js && node tools/dedupe-test.js"
+    "test": "node tools/validate.js && node tools/simulate.js && node tools/dedupe-test.js && node tools/repetition-test.js",
+    "flow": "node tools/repetition-test.js"
   },
   "devDependencies": {
     "puppeteer": "^24.43.1"

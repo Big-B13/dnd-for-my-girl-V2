@@ -4,6 +4,7 @@ require('/home/user/tales-of-the-dm/js/data/items.js');
 require('/home/user/tales-of-the-dm/js/engine.js');
 require('/home/user/tales-of-the-dm/js/data/episode1.js');
 require('/home/user/tales-of-the-dm/js/data/episode1-perry.js');
+require('/home/user/tales-of-the-dm/js/data/goblins.js');
 const TDM=global.TDM,E=TDM.engine;
 const ep=TDM.EPISODES.ep1_apple_pie;
 const char={id:'t',name:'T',race:'human',class:'bard',origin:'sage',stats:{STR:10,DEX:14,CON:14,INT:12,WIS:12,CHA:16},level:1,xp:0,startItems:['letter_of_note'],startGold:25};

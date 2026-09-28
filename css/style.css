@@ -550,3 +550,20 @@ textarea.input{min-height:140px;resize:vertical;line-height:1.7}
 /* ---- subclass line in the sidebar ------------------------------------- */
 .hero-info .hsub{font-family:var(--ui);font-size:11px;letter-spacing:.04em;
   color:var(--gold);opacity:.9;margin-top:2px}
+
+/* ---- the goblin crew ---------------------------------------------------- */
+.crewpanel{margin-bottom:20px}
+.crewpanel h3{font-size:19px;color:var(--wine);margin-bottom:4px}
+.crew-sub{font-size:13.5px;opacity:.7;margin:0 0 14px}
+.crew-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;
+  background:rgba(201,178,138,.2);margin-bottom:7px;border-left:3px solid transparent}
+.crew-row.good{border-left-color:#6b8f4e}
+.crew-row.ok{border-left-color:var(--gold)}
+.crew-row.bad{border-left-color:#a8543a}
+.crew-row .ci{font-size:20px;line-height:1}
+.crew-row .cn{display:flex;flex-direction:column;min-width:170px}
+.crew-row .cn em{font-style:normal;font-family:var(--ui);font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+.crew-row .cw{font-size:13.5px;opacity:.85;margin-left:auto;text-align:right}
+@media(max-width:620px){.crew-row .cw{margin-left:0;text-align:left;width:100%}
+  .crew-row{flex-wrap:wrap}}

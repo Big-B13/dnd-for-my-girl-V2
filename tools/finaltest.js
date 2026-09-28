@@ -16,6 +16,9 @@ const puppeteer=require('puppeteer'); const sleep=ms=>new Promise(r=>setTimeout(
  await p.waitForFunction(()=>!document.querySelector('#ccNext').disabled); await click('#ccNext');
  await click('[data-race="half_elf"]'); await sleep(180); await click('#ccNext');
  await p.waitForSelector('[data-class="druid"]'); await click('[data-class="druid"]'); await sleep(180); await click('#ccNext');
+ // subclass / Path step (added with SUBCLASSES)
+ await p.waitForSelector('[data-sub]'); const sub0=await p.$eval('[data-sub]',e=>e.dataset.sub);
+ await click(`[data-sub="${sub0}"]`); await sleep(180); await click('#ccNext');
  await p.waitForSelector('[data-origin="folk_hero"]'); await click('[data-origin="folk_hero"]'); await sleep(180); await click('#ccNext');
  await p.waitForSelector('#useRec'); await click('#useRec'); await sleep(250); await click('#ccNext');
  await p.waitForSelector('.app-tab'); await sleep(200); await click('#ccNext');

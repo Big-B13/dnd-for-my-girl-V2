@@ -1127,7 +1127,11 @@
     else if (t.type === 'heal') { cls += ' heal'; html = `<span class="ti">💚</span><span><b>+${t.amount} hit points</b></span>`; }
     else if (t.type === 'gold') { cls += ' gold'; html = `<span class="ti">🪙</span><span><b>${t.amount > 0 ? '+' : ''}${t.amount} gold</b></span>`; }
     else if (t.type === 'item') { cls += ' item'; html = `<span class="ti">${t.icon}</span><span><b>Gained</b>${esc(t.text)}</span>`; }
-    else if (t.type === 'bond') { html = `<span class="ti">${t.delta > 0 ? '💞' : '💢'}</span><span><b>${esc(cap(t.who.replace(/_/g, ' ')))}</b>${t.delta > 0 ? 'thinks better of you' : 'will not forget this'}</span>`; }
+    else if (t.type === 'bond') {
+      const g = (TDM.CREW_BY_ID || {})[t.who];
+      const who = TDM.bondLabel ? TDM.bondLabel(t.who) : cap(String(t.who).replace(/_/g, ' '));
+      html = `<span class="ti">${g ? g.icon : (t.delta > 0 ? '💞' : '💢')}</span><span><b>${esc(who)}</b>${t.delta > 0 ? 'thinks better of you' : 'will not forget this'}</span>`;
+    }
     else if (t.type === 'level') { cls += ' level'; html = `<span class="ti">⬆️</span><span><b>Level up!</b>${esc(t.text)}</span>`; }
     else if (t.type === 'perk') { html = `<span class="ti">✨</span><span>${esc(t.text)}</span>`; }
     else if (t.type === 'immune') { html = `<span class="ti">🛡️</span><span>${esc(t.text)}</span>`; }
@@ -1182,6 +1186,7 @@
           `<div class="major"><span class="mi">🖋️</span><span><span class="mw">${esc(save.char.name)}</span> ${esc(m.text)}.</span></div>`).join('')
           : `<div class="inv-empty">No defining moments were recorded.</div>`}
       </div>
+      ${crewPanel(save)}
       <div id="endCompare"></div>
       <div style="display:flex;gap:11px;justify-content:center;flex-wrap:wrap">
         <button class="btn primary" id="endEpisodes">Episode select</button>
@@ -1309,6 +1314,22 @@
     return s;
   }
   function inSet(set, m) { return majorIds(m).some(i => set.has(i)); }
+
+  /* Where each of the four stands with you by the end. */
+  function crewPanel(save) {
+    if (!TDM.crewStanding) return '';
+    const rows = TDM.crewStanding(save);
+    if (!rows.length) return '';
+    return `<div class="panel pad crewpanel">
+      <h3>The crew at Grammy's</h3>
+      <p class="crew-sub">You did not meet them as a group. You met them one at a time.</p>
+      ${rows.map(r => `<div class="crew-row ${r.cls}">
+        <span class="ci">${r.icon}</span>
+        <span class="cn"><b>${esc(r.name)}</b><em>${esc(r.role)}</em></span>
+        <span class="cw">${esc(r.word)}</span>
+      </div>`).join('')}
+    </div>`;
+  }
 
   async function renderEndCompare(ep, save) {
     const host = $('#endCompare');

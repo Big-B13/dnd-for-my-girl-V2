@@ -207,6 +207,42 @@ Its purpose is the **end-of-episode comparison**: the first time anyone finishes
 they immediately see "How Perry played it" — what only Perry did, what only they did, and
 where the two runs agreed.
 
+## The crew at Grammy's
+
+Four goblins run the bakery, and they are characters, not scenery. They live in
+`js/data/goblins.js`, which loads *after* the episode files and patches them.
+
+| | Who | Job | What they are |
+|---|---|---|---|
+| 🥘 | **Pot-Helmet** | Marketing | Enthusiasm, weaponised. Wears an actual cooking pot. Has been making signs for the reopening for a year and a half. |
+| 🥖 | **Rolling-Pin** | Assistant Crust Commander | A rank he gave himself. Laminates dough he has never tasted the result of. |
+| 🧈 | **Nib** | Butter and sugar | The smallest. Trusted with the butter because he is the only one who does not eat it. |
+| 📋 | **Skritch** | Paperwork | Keeps a four-page ledger of every failed attempt. Nobody asked him to. Nobody reads it. |
+
+**Where you meet them.** Pot-Helmet ambushes you on the road before you ever see
+the bakery. Nib smells you out at the loading dock. Skritch's handwriting is all
+over the shop and the office — the stock list, the note on the cashbox (*COINS.
+NOT OURS. DO NOT.*), the ledger. Rolling-Pin drops out of the rafters when you
+touch Grammy's tools, and guards the chief's door.
+
+**They are tracked separately.** `effects.bond` takes any key, so each of the four
+has their own number — `bond: { nib: 8 }`. Toasts name them individually ("Nib
+thinks better of you"), and the end screen shows a **crew standing panel** built
+by `TDM.crewStanding(save)`: *is afraid of you* → *is wary* → *likes you* →
+*trusts you* → *would follow you anywhere*, per goblin.
+
+**Quiet moments.** Four optional scenes — `crew_nib`, `crew_skritch`,
+`crew_rolling_pin`, `crew_pot_helmet` — appear once each from the bakery floor and
+the shop, but only if you did not fight them. They pay off in the final bake: if
+you promised Rolling-Pin a proper crust, he gets one; if Nib trusts you, he is
+given the first slice of the second pie.
+
+### Adding a fifth goblin
+
+Push onto `TDM.CREW`, then use the `setText` / `addFx` / `addChoice` helpers at
+the top of `goblins.js`. Overriding scene *text* and merging *effects* keeps every
+`goto` in `episode1.js` intact, which is why the patch cannot break routing.
+
 ## How the "no going back" rule is enforced
 
 There is no back button, no undo, and no branch re-entry once a choice is committed.

@@ -10,6 +10,30 @@
 
   const ADVENTURE_ITEMS = {
     /* --- Episode 1: Grammy's Country Apple Pie --- */
+  map: {
+    name: "Tyndareus's Map",
+    icon: "🗺️",
+    kind: "quest",
+    desc: "Old and soft as cloth, folded so many times the creases have gone furry. Two days south and west, into apple country."
+  },
+  recipe_copy: {
+    name: "The Recipe, Copied",
+    icon: "📜",
+    kind: "quest",
+    desc: "Three sheets in your own hand, carried across word for word from Grammy Smithwick's originals — marginal notes and all. 'Less sugar if the apples are Rootilda's. More if Barktholomew's. He sulks.'"
+  },
+  recipe_book: {
+    name: "Grammy's Recipe Book",
+    icon: "📗",
+    kind: "quest",
+    desc: "Fat, bound in green cloth, a faded apple stamped on the spine. It sat on a shelf in that office for forty years and nobody felt it was theirs to take."
+  },
+  grammys_pie: {
+    name: "A Grammy's Country Apple Pie",
+    icon: "🥧",
+    kind: "quest",
+    desc: "Golden-lidded, crimped by an Assistant Crust Commander who would not be hurried. Still warm."
+  },
     red_apple: { name: "Barktholomew's Red Apple", icon: '🍎', kind: 'quest',
       desc: 'A gift from a grumpy old tree who had not been apologised to in three hundred years. It has not bruised. It does not seem inclined to.' },
     green_apple: { name: "Rootilda's Green Apple", icon: '🍏', kind: 'quest',

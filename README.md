@@ -176,137 +176,82 @@ the base class perk, and can override the starting weapon.
 all, rather than being shown something they can never pick. Subclasses live in
 `SUBCLASSES` in `js/data/character-options.js`; 36 of them, three per class.
 
-## Episode 1 — "the kinder road"
+## Episode 1 — Perry's run, retold
 
-`js/data/episode1-perry.js` is a patch layered on top of `episode1.js`. It adds 60 scenes
-drawn from the original table playthrough, without removing anything:
+Episode 1 is no longer an invented dungeon crawl. It is **the actual playthrough**,
+rebuilt scene for scene from `uploads/perry-grammys-everything-overview.txt`:
+Perry, Elf Fighter, DM'd by Rex. The kind road, because that is the one that
+happened.
 
-- **Barktholomew and Rootilda**, the two arguing apple trees, and the apology that ends a
-  three-hundred-year feud
-- **The Oven** — sentient, ancient, speaks in single words (`APPLES`, `SONG`, `TRUTH`,
-  `SHARE`)
-- **Grammy Smithwick's spirit** and her three questions in the office
-- **The three baking trials**: organise the crew, get the filling right, and SONG
-- **The tower finale**: hand over the recipe, tear it up, or make the wizard a patron —
-  then decide who gets the first slice
+**The spine (21 beats, ~107 scenes):**
 
-The goblin chief is **Grubnash** and his crew are named (Pot-Helmet, Rolling-Pin, Nib,
-Skritch); the imp is **Crimp**.
+| Act | Beats |
+|---|---|
+| The tower | Crimp at the door · the wizard's tale · saying yes |
+| The orchard | the failed Stealth roll · **the apology** · two apples |
+| The door | the front door · *"I come here to buy a recipe book"* · the apple exchange |
+| The crew | Grubnash · **meeting all four, one at a time** · the Oven · the search |
+| Grammy | three questions · *"Yes."* · what happened to her · the copy |
+| The bake | the organising · the lights and the cinnamon · **the song** · SHARE |
+| The tower again | the torn recipe · **the first slice to Crimp** · the next morning |
 
-Editing `episode1.js` directly still works — the patch only adds scenes and appends a few
-choices to existing ones.
+**Every choice Perry turned down is in the game too.** The crossroads log in the
+source document listed the roads not taken at each scene, so those are the
+alternatives: threaten the trees, take a side, sneak the loading dock, demand the
+book, lie to Grammy, follow the recipe to the gram, hand the paper over and take
+the gold. They are real, they are remembered, and they are never the warm one.
 
-## Perry — the original run
+### The warm road is verifiable — `npm run perry`
 
-`js/data/perry-run.js` seeds a third, **read-only** profile containing the real table
-playthrough: Perry, Elf Gunslinger, 24 defining choices, the five dice rolls that were
-actually rolled. It is seeded once and never overwritten; the profile cannot be played
-and `persist()` refuses to write to it.
+`tools/perry-path-test.js` plays the episode always choosing what Perry actually
+chose, and feeds it **his real dice** — including the famous Stealth 10 that
+failed and forced the apology:
 
-Its purpose is the **end-of-episode comparison**: the first time anyone finishes Episode 1
-they immediately see "How Perry played it" — what only Perry did, what only they did, and
-where the two runs agreed.
+```
+🎲 Stealth 10 vs DC 13 → FAILURE
+🎲 Persuasion 13 vs DC 12 → success
+🎲 Investigation 19 vs DC 14 → success
+🎲 Athletics 15 vs DC 12 → success
+🎲 Performance 20 vs DC 12 → success
 
-## The crew at Grammy's
-
-Four goblins run the bakery, and they are characters, not scenery. They live in
-`js/data/goblins.js`, which loads *after* the episode files and patches them.
-
-| | Who | Job | What they are |
-|---|---|---|---|
-| 🥘 | **Pot-Helmet** | Marketing | Enthusiasm, weaponised. Wears an actual cooking pot. Has been making signs for the reopening for a year and a half. |
-| 🥖 | **Rolling-Pin** | Assistant Crust Commander | A rank he gave himself. Laminates dough he has never tasted the result of. |
-| 🧈 | **Nib** | Butter and sugar | The smallest. Trusted with the butter because he is the only one who does not eat it. |
-| 📋 | **Skritch** | Paperwork | Keeps a four-page ledger of every failed attempt. Nobody asked him to. Nobody reads it. |
-
-**Where you meet them.** Pot-Helmet ambushes you on the road before you ever see
-the bakery. Nib smells you out at the loading dock. Skritch's handwriting is all
-over the shop and the office — the stock list, the note on the cashbox (*COINS.
-NOT OURS. DO NOT.*), the ledger. Rolling-Pin drops out of the rafters when you
-touch Grammy's tools, and guards the chief's door.
-
-**They are tracked separately.** `effects.bond` takes any key, so each of the four
-has their own number — `bond: { nib: 8 }`. Toasts name them individually ("Nib
-thinks better of you"), and the end screen shows a **crew standing panel** built
-by `TDM.crewStanding(save)`: *is afraid of you* → *is wary* → *likes you* →
-*trusts you* → *would follow you anywhere*, per goblin.
-
-**Quiet moments.** Four optional scenes — `crew_nib`, `crew_skritch`,
-`crew_rolling_pin`, `crew_pot_helmet` — appear once each from the bakery floor and
-the shop, but only if you did not fight them. They pay off in the final bake: if
-you promised Rolling-Pin a proper crust, he gets one; if Nib trusts you, he is
-given the first slice of the second pie.
-
-### Adding a fifth goblin
-
-Push onto `TDM.CREW`, then use the `setText` / `addFx` / `addChoice` helpers at
-the top of `goblins.js`. Overriding scene *text* and merging *effects* keeps every
-`goto` in `episode1.js` intact, which is why the patch cannot break routing.
-
-## Flow — why the bakery stops repeating itself
-
-`js/data/flow.js` (loaded last) fixes the biggest structural problem in
-Episode 1: the hubs were menus. You could examine the failed baking attempts
-nine times, loot the cold-rooms twice, and re-trigger the rafter standoff
-forever. A random playthrough spent **44% of its scene entries re-reading rooms
-it had already read**.
-
-Three rules, applied by matching choice **text** (not index, so it survives
-edits to the episode files):
-
-1. **Every examine / search / take link is one-shot.** Once you have done a
-   thing, the game stops offering it. Mutually exclusive options (pick the lock
-   *or* smash it) retire as a group.
-2. **Doors close behind you.** When a room has nothing left in it, the hub stops
-   listing it — `closeWhen('shop_hub', 'The office.', ...)`. Once the floor is
-   spent, the stairs are the only way on.
-3. **Hubs narrate progress.** `bakery_floor`, `shop_hub` and `orchard_hub` have
-   text *functions* that describe what is left rather than repeating the
-   establishing shot — ending at *"You have been over the whole floor… whatever
-   is left in this building is up the stairs."*
-
-This rests on two lines added to `view()` in `js/engine.js`:
-
-```js
-taken:   (scene, text) => save.choices.some(c => c.scene === scene && (text == null || c.text === text)),
-visited: (scene)       => save.choices.some(c => c.scene === scene),
+Perry beats hit : 27/27
+level 2 | xp 850 | gold 25
+✅ Perry's exact run is reproducible end to end.
 ```
 
-`save.choices` was already being recorded, so no save-format change and old
-saves keep working.
+It lands on **Fighter 2 with 25 gold**, which is exactly where Perry's character
+sheet ends. Across 1500 random runs nobody ever exceeds level 2.
 
-### Measured effect — `npm run flow`
+### The crew
 
-`tools/repetition-test.js` plays 400 random runs with and without the patch:
+They are in the story from the beginning now, not as scenery. Each gets his own
+introduction scene and his own bond track:
 
-| | without | with |
+| | Who | His scene |
 |---|---|---|
-| scene entries per run | 110.4 | 71.3 |
-| **repeated** entries per run | **46.3** | **14.9** |
-| share of playthrough that is repetition | 44% | 21% |
-| reached the ending | 399/400 | 400/400 |
+| 🥘 | **Pot-Helmet** — chaotic marketer, enthusiasm weaponised | the eleven charcoal signs he has been repainting for thirty-nine years |
+| 🥖 | **Rolling-Pin** — self-appointed Assistant Crust Commander | lamination he taught himself from pictures, aiming at a crust he has never tasted |
+| 🧈 | **Nib** — tiny, careful, trusted with the butter and sugar | the tally scratched into the crock, and why he is the only one allowed near it |
+| 📋 | **Skritch** — lanky, paperwork and inventory, permanently nervous | forty years of entries, every one ending *it was wrong* |
 
-**Repeated scene entries are down 68%**, and completion went *up*
-(`simulate.js`: 1186/1200, 0 dead ends, 193/193 scenes reachable). Note this is
-a *random* walker, which wanders on purpose; a player with intent sees far less.
+`effects.bond` takes any key, so each has his own standing, shown on the end
+screen by `TDM.crewStanding()` — *is afraid of you* → *would follow you anywhere*.
 
-### Two traps worth knowing about
+### Comparing with Perry
 
-Making choices conditional can strand a scene, and it did — twice — before
-`simulate.js` caught it:
+Perry is seeded as a read-only third profile (`js/data/perry-run.js`) with his 27
+defining choices. Because Nergis now plays the same story, the end-of-episode
+screen shows **You both did this** alongside **Only Perry did this** and **Only
+you did this** — so she can see exactly where she walked his road and where she
+stepped off it.
 
-* **Ten different scenes route into `apartment_desk`**, several with the desk as
-  their *only* choice. Hiding the link dead-ended them. Those are now
-  **re-pointed forward** to `apartment_notebook` instead of hidden — see
-  `retire()`, which only hides a link when some *other* choice in that scene is
-  unconditional.
-* **The office half of the recipe lives in the office desk.** Closing the office
-  door on thoroughness alone could lock a player out of finishing, so the door
-  reopens whenever `!S.has('recipe_half_office')`.
+### Files
 
-`TDM.FLOW_RISK` lists any scene whose choices are now all conditional; set
-`TDM.DEBUG_FLOW = true` to print it. Always re-run `npm test` after editing
-`flow.js`.
+- `js/data/episode1.js` — Act I–III: the tower, the orchard, the door
+- `js/data/episode1-crew.js` — Act IV–V: the crew, the Oven, Grammy
+- `js/data/episode1-bake.js` — Act VI–VII: the three trials, the tower again
+- `js/data/episode1-assemble.js` — merges the acts into `TDM.EPISODES.ep1_apple_pie`
+- `archive/` — the old invented branching episode, kept but **not loaded**
 
 ## How the "no going back" rule is enforced
 

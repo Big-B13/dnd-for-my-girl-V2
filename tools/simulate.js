@@ -3,9 +3,10 @@ require('/home/user/tales-of-the-dm/js/data/character-options.js');
 require('/home/user/tales-of-the-dm/js/data/items.js');
 require('/home/user/tales-of-the-dm/js/engine.js');
 require('/home/user/tales-of-the-dm/js/data/episode1.js');
-require('/home/user/tales-of-the-dm/js/data/episode1-perry.js');
+require('/home/user/tales-of-the-dm/js/data/episode1-crew.js');
+require('/home/user/tales-of-the-dm/js/data/episode1-bake.js');
+require('/home/user/tales-of-the-dm/js/data/episode1-assemble.js');
 require('/home/user/tales-of-the-dm/js/data/goblins.js');
-require('/home/user/tales-of-the-dm/js/data/flow.js');
 const TDM = global.TDM, E = TDM.engine, O = TDM.CHAR_OPTIONS;
 const ep = TDM.EPISODES.ep1_apple_pie;
 

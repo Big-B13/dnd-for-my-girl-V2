@@ -42,30 +42,33 @@
   /* The defining choices, in the order they happened. Keys are stable so
      re-wording the text later will not break comparisons. */
   const MAJORS = [
-    ['accepted_quest',     'accepted Tyndareus\'s quest to find Grammy\'s recipe'],
-    ['stealth_failed',     'snapped a twig sneaking up on the arguing orchard trees'],
-    ['apologised_trees',   'apologised to Barktholomew and Rootilda, and ended a three-hundred-year feud'],
-    ['tree_apples',        'was given an apple by each of the two arguing orchard trees'],
-    ['front_door',         'walked up to the front door of a goblin-held bakery in the open'],
-    ['buy_recipe_book',    'told a room full of goblins he had come to buy a recipe book'],
-    ['apple_exchange',     'traded an apple with a goblin as a gesture of good faith'],
-    ['wants_to_bake',      'told Chief Grubnash he wanted to learn to bake Grammy\'s pie'],
-    ['helped_oven',        'agreed to help the oven, with no conditions'],
-    ['investigated',       'searched the bakery with Grubnash\'s help and worked out what was missing'],
-    ['oven_promise',       'promised the oven to help everyone in the bakery, including it'],
-    ['all_goblins_bake',   'insisted that every goblin in the bakery help with the baking'],
-    ['grammy_yes',         'answered Grammy\'s spirit honestly: yes, he meant to do it properly'],
-    ['asked_about_grammy', 'asked Grammy what happened to her, instead of asking about the recipe'],
-    ['promised_to_share',  'promised Grammy that everyone would get a slice'],
+    ['accepted_quest',     'said yes to Tyndareus without haggling'],
+    ['apologised_trees',   'apologised to two feuding apple trees, and meant it'],
+    ['tree_apples',        'was given an apple by each of the two arguing trees'],
+    ['front_door',         'walked up to the front door of a goblin-held building and knocked'],
+    ['buy_recipe_book',    'told a doorway full of armed goblins: "I come here to buy a recipe book"'],
+    ['apple_exchange',     'took the apple a goblin offered, and ate it in front of them'],
+    ['wants_to_bake',      'told Chief Grubnash: "I want to learn how to bake Grammy\'s pie"'],
+    ['met_the_crew',       'met Pot-Helmet, Rolling-Pin, Nib and Skritch as crewmates, one by one'],
+    ['helped_oven',        'walked up to the living Oven and offered to help it'],
+    ['oven_promise',       'told the Oven: "I want to help everyone here, including you"'],
+    ['investigated',       'searched the bakery with Grubnash\'s help, and found it'],
+    ['all_goblins_bake',   'asked permission to take the recipe, and asked that every goblin help bake'],
+    ['grammy_yes',         'answered Grammy Smithwick\'s spirit with one word: "Yes"'],
+    ['asked_about_grammy', 'asked Grammy Smithwick what had happened to her'],
+    ['promised_to_share',  'promised Grammy Smithwick to share the pie with the goblins and with Tyndareus'],
     ['copied_recipe',      'copied the recipe out by hand and left Grammy\'s book at the bakery'],
-    ['organised_crew',     'drilled the goblin bakery like a company of soldiers'],
-    ['town_told',          'sent Pot-Helmet and Skritch into town to announce that Grammy\'s was baking again'],
-    ['goblins_chose_spice','let the goblins decide the cinnamon'],
-    ['sang',               'sang an old soldier\'s song to the oven, and the goblins joined in one by one'],
-    ['reopened',           'reopened Grammy\'s Bakery and shared the pies with anyone who came'],
-    ['tore_recipe',        'tore up the recipe in front of Tyndareus and told him to come to the bakery himself'],
-    ['slice_to_crimp',     'gave the first slice to Crimp'],
-    ['said_the_words',     'told Tyndareus not to forget the people still around him']
+    ['organised_crew',     'turned a chaotic goblin kitchen into a working production line'],
+    ['town_told',          'sent Pot-Helmet and Skritch running into town to announce that Grammy\'s was baking again'],
+    ['cast_lights',        'filled the bakery with drifting autumn lights while the crew worked'],
+    ['goblins_chose_spice','handed the cinnamon tin back and let the goblins decide how much'],
+    ['sang',               'sang an old soldiers\' song over the Oven, and the goblins joined in one by one'],
+    ['shared_the_pies',    'shared the pies with the goblins, the town, and the orchard'],
+    ['reopened',           'reopened Grammy\'s Bakery'],
+    ['tore_recipe',        'tore up the copied recipe in front of Tyndareus'],
+    ['said_the_words',     'told Tyndareus: "If he ever really wants to find this pie again, he goes with me to the bakery in the morning"'],
+    ['slice_to_crimp',     'gave the first slice of Grammy\'s pie to Crimp, not to the wizard'],
+    ['said_last_words',    'told Tyndareus: "don\'t forget about the people you do have around you"']
   ].map(([key, text], i) => ({ key, text, at: NOW + i * 1000 }));
 
   /* The dice that were actually rolled. */
@@ -85,7 +88,7 @@
     majors: MAJORS,
     rolls: ROLLS,
     summary: {
-      choices: 24, level: 2, xp: 900, gold: 25, hp: 20, maxHp: 20,
+      choices: 27, level: 2, xp: 900, gold: 25, hp: 20, maxHp: 20,
       bloodless: true,
       rewards: ['25 gold pieces', 'Free pie at Grammy\'s, forever', '"The elf who reopened Grammy\'s Bakery"']
     }
